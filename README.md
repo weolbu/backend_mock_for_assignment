@@ -7,7 +7,7 @@
 - [API 명세](#-api-명세)
 - [사용 예시 (curl)](#-사용-예시-curl)
 - [샘플 데이터](#-샘플-데이터)
-- [개발 도구](#-개발-도구)
+- [개발 도구](#-개발-도구) ← **Swagger UI 포함**
 - [트러블슈팅](#-트러블슈팅)
 
 ---
@@ -332,6 +332,13 @@ curl -s -X POST http://localhost:8080/api/courses/1/enroll \
 ---
 
 ## 🛠 개발 도구
+
+### Swagger UI (API 문서)
+브라우저에서 API 명세를 확인하고 직접 테스트할 수 있습니다.
+
+- **URL: http://localhost:8080/swagger-ui/index.html**
+
+> 인증이 필요한 API 테스트 시, 우측 상단 **Authorize** 버튼을 클릭하고 로그인에서 받은 JWT 토큰을 입력하세요.
 
 ### H2 Console
 인메모리 데이터베이스 조회가 가능합니다.
