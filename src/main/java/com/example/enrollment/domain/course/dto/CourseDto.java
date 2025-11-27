@@ -31,6 +31,11 @@ public class CourseDto {
         @NotNull(message = "최대 수강 인원은 필수입니다")
         @Min(value = 1, message = "최대 수강 인원은 1명 이상이어야 합니다")
         private Integer maxStudents;
+
+        @Schema(description = "수강료 (원)", example = "100000", minimum = "0", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "수강료는 필수입니다")
+        @Min(value = 0, message = "수강료는 0원 이상이어야 합니다")
+        private Integer price;
     }
 
     @Schema(description = "강의 상세 응답")
@@ -60,6 +65,9 @@ public class CourseDto {
         @Schema(description = "정원 마감 여부", example = "false")
         private final Boolean isFull;
 
+        @Schema(description = "수강료 (원)", example = "100000")
+        private final Integer price;
+
         @Schema(description = "강의 등록일시", example = "2024-01-15T09:00:00")
         private final LocalDateTime createdAt;
 
@@ -72,6 +80,7 @@ public class CourseDto {
             this.currentStudents = course.getCurrentStudents();
             this.availableSeats = course.getAvailableSeats();
             this.isFull = course.isFull();
+            this.price = course.getPrice();
             this.createdAt = course.getCreatedAt();
         }
     }
@@ -100,6 +109,9 @@ public class CourseDto {
         @Schema(description = "정원 마감 여부", example = "false")
         private final Boolean isFull;
 
+        @Schema(description = "수강료 (원)", example = "100000")
+        private final Integer price;
+
         public ListResponse(Course course) {
             this.id = course.getId();
             this.title = course.getTitle();
@@ -108,6 +120,7 @@ public class CourseDto {
             this.currentStudents = course.getCurrentStudents();
             this.availableSeats = course.getAvailableSeats();
             this.isFull = course.isFull();
+            this.price = course.getPrice();
         }
     }
 }

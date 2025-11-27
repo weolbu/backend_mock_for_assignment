@@ -35,16 +35,20 @@ public class Course {
     @Column(name = "current_students", nullable = false)
     private Integer currentStudents = 0;
 
+    @Column(nullable = false)
+    private Integer price;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public Course(String title, String description, String instructorName, Integer maxStudents) {
+    public Course(String title, String description, String instructorName, Integer maxStudents, Integer price) {
         this.title = title;
         this.description = description;
         this.instructorName = instructorName;
         this.maxStudents = maxStudents;
         this.currentStudents = 0;
+        this.price = price;
         this.createdAt = LocalDateTime.now();
     }
 

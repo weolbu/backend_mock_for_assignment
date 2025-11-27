@@ -1,5 +1,6 @@
 package com.example.enrollment.global.security;
 
+import com.example.enrollment.domain.user.entity.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,13 +24,14 @@ public class JwtTokenProvider {
         this.expiration = expiration;
     }
 
-    public String createToken(Long userId, String email) {
+    public String createToken(Long userId, String email, Role role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
                 .subject(String.valueOf(userId))
                 .claim("email", email)
+                .claim("role", role.name())
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(secretKey)
@@ -44,6 +46,11 @@ public class JwtTokenProvider {
     public String getEmail(String token) {
         Claims claims = parseClaims(token);
         return claims.get("email", String.class);
+    }
+
+    public Role getRole(String token) {
+        Claims claims = parseClaims(token);
+        return Role.valueOf(claims.get("role", String.class));
     }
 
     public boolean validateToken(String token) {

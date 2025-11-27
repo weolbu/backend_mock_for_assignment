@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "3. Enrollment", description = "수강 신청 API - 강의 수강 신청")
 @RestController
-@RequestMapping("/api/courses")
 @RequiredArgsConstructor
 public class EnrollmentController {
 
@@ -83,12 +83,69 @@ public class EnrollmentController {
                     )
             )
     })
-    @PostMapping("/{courseId}/enroll")
+    @PostMapping("/api/courses/{courseId}/enroll")
     public ResponseEntity<EnrollmentDto.Response> enroll(
             @Parameter(description = "강의 ID", example = "1")
             @PathVariable Long courseId,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         EnrollmentDto.Response response = enrollmentService.enroll(userPrincipal.getUserId(), courseId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            summary = "배치 수강 신청 🔒",
+            description = """
+                    여러 강의를 한 번에 수강 신청합니다. **인증이 필요합니다.**
+
+                    ### 특징
+                    - **부분 성공 지원**: 일부 강의만 성공하더라도 해당 강의들은 수강 신청됩니다.
+                    - 성공/실패한 강의 목록이 각각 반환됩니다.
+
+                    ### 응답 구조
+                    ```json
+                    {
+                      "success": [
+                        { "enrollmentId": 1, "courseId": 1, "courseTitle": "강의1" }
+                      ],
+                      "failed": [
+                        { "courseId": 2, "reason": "이미 수강 신청한 강의입니다" }
+                      ]
+                    }
+                    ```
+                    """,
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "배치 수강 신청 처리 완료 (부분 성공 포함)",
+                    content = @Content(schema = @Schema(implementation = EnrollmentDto.BatchResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = "{\"code\":\"G001\",\"message\":\"강의 ID 목록은 필수입니다\",\"timestamp\":\"2024-01-15T14:30:00\"}")
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = "{\"code\":\"A003\",\"message\":\"인증이 필요합니다\",\"timestamp\":\"2024-01-15T14:30:00\"}")
+                    )
+            )
+    })
+    @PostMapping("/api/enrollments/batch")
+    public ResponseEntity<EnrollmentDto.BatchResponse> enrollBatch(
+            @Valid @RequestBody EnrollmentDto.BatchRequest request,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        EnrollmentDto.BatchResponse response = enrollmentService.enrollBatch(
+                userPrincipal.getUserId(),
+                request.getCourseIds()
+        );
+        return ResponseEntity.ok(response);
     }
 }

@@ -16,6 +16,7 @@ public enum ErrorCode {
     // Course
     COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "C001", "강의를 찾을 수 없습니다"),
     COURSE_FULL(HttpStatus.BAD_REQUEST, "C002", "수강 정원이 초과되었습니다"),
+    INSTRUCTOR_ONLY(HttpStatus.FORBIDDEN, "C003", "강사만 강의를 등록할 수 있습니다"),
 
     // Enrollment
     ALREADY_ENROLLED(HttpStatus.CONFLICT, "E001", "이미 수강 신청한 강의입니다"),

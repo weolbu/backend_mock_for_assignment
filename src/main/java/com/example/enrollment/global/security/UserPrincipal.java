@@ -1,5 +1,6 @@
 package com.example.enrollment.global.security;
 
+import com.example.enrollment.domain.user.entity.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,10 +16,11 @@ public class UserPrincipal implements UserDetails {
 
     private final Long userId;
     private final String email;
+    private final Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override

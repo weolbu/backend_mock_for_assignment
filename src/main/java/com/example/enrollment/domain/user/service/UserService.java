@@ -30,6 +30,8 @@ public class UserService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
+                .phone(request.getPhone())
+                .role(request.getRole())
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -37,7 +39,9 @@ public class UserService {
         return new UserDto.SignupResponse(
                 savedUser.getId(),
                 savedUser.getEmail(),
-                savedUser.getName()
+                savedUser.getName(),
+                savedUser.getPhone(),
+                savedUser.getRole()
         );
     }
 
@@ -49,8 +53,14 @@ public class UserService {
             throw new BusinessException(ErrorCode.INVALID_PASSWORD);
         }
 
-        String token = jwtTokenProvider.createToken(user.getId(), user.getEmail());
-        UserDto.UserInfo userInfo = new UserDto.UserInfo(user.getId(), user.getEmail(), user.getName());
+        String token = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
+        UserDto.UserInfo userInfo = new UserDto.UserInfo(
+                user.getId(),
+                user.getEmail(),
+                user.getName(),
+                user.getPhone(),
+                user.getRole()
+        );
 
         return new UserDto.LoginResponse(token, userInfo);
     }
