@@ -21,7 +21,7 @@
 
 ```bash
 # 1. 프로젝트 디렉토리로 이동
-cd course-enrollment-api
+cd backend_mock_for_assignment
 
 # 2. 서버 실행 (첫 실행 시 빌드에 약 1-2분 소요)
 docker-compose up --build -d
