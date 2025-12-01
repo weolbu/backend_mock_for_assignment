@@ -112,6 +112,9 @@ public class CourseDto {
         @Schema(description = "수강료 (원)", example = "100000")
         private final Integer price;
 
+        @Schema(description = "강의 등록일시", example = "2024-01-15T09:00:00")
+        private final LocalDateTime createdAt;
+
         public ListResponse(Course course) {
             this.id = course.getId();
             this.title = course.getTitle();
@@ -121,6 +124,7 @@ public class CourseDto {
             this.availableSeats = course.getAvailableSeats();
             this.isFull = course.isFull();
             this.price = course.getPrice();
+            this.createdAt = course.getCreatedAt();
         }
     }
 }
